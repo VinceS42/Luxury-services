@@ -1,0 +1,24 @@
+{{ form_start(registrationForm) }}
+{{ form_errors(registrationForm) }}
+
+{{ form_row(registrationForm.email) }}
+<div class="input-field">
+	{{ form_row(registrationForm.plainPassword) }}
+	<i class="fa fa-eye show-password"></i>
+
+</div>
+<div class="input-field">
+	{{ form_row(registrationForm.confirmPassword) }}
+	<i class="fa fa-eye show-password"></i>
+
+</div>
+<div class="checkbox">
+	{{ form_row(registrationForm.agreeTerms) }}
+</div>
+
+<button type="submit" class="btn btn-lg gradient secondary btn-block waves-effect waves-light mt-20 mb-20">Create an account</button>
+
+<div class="links">
+	<a href="{{path ('app_login')}}">Already have an account? Click here</a>
+</div>
+{{ form_end(registrationForm) }}
