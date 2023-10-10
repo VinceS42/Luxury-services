@@ -32,11 +32,18 @@ class Client
     private ?string $mail = null;
 
     #[ORM\Column(nullable: true)]
-    private ?int $notes = null;
+    private ?string $notes = null;
 
     #[ORM\ManyToOne(inversedBy: 'client')]
-    #[ORM\JoinColumn(nullable: false)]
+    #[ORM\JoinColumn(nullable: true)]
     private ?Job $job = null;
+
+
+    public function __toString(){
+
+        return $this->getCompagny();
+        
+    }
 
     public function getId(): ?int
     {
@@ -115,12 +122,12 @@ class Client
         return $this;
     }
 
-    public function getNotes(): ?int
+    public function getNotes(): ?string
     {
         return $this->notes;
     }
 
-    public function setNotes(?int $notes): static
+    public function setNotes(?string $notes): static
     {
         $this->notes = $notes;
 

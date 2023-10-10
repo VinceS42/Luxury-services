@@ -16,8 +16,7 @@ class Candidat
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column(length: 100, nullable: true)]
-    private ?string $gender = null;
+
 
     #[ORM\Column(length: 150, nullable: true)]
     private ?string $firstname = null;
@@ -28,14 +27,12 @@ class Candidat
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $localisation = null;
 
-    #[ORM\Column(length: 255, nullable: true)]
-    private ?string $city = null;
 
     #[ORM\Column(length: 150, nullable: true)]
     private ?string $nationality = null;
 
     #[ORM\Column]
-    private ?bool $isPassport = null;
+    private ?bool $isPassport = false;
 
     #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
     private ?\DateTimeInterface $birthdate = null;
@@ -49,9 +46,6 @@ class Candidat
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $sector = null;
 
-    #[ORM\Column(length: 255, nullable: true)]
-    private ?string $experience = null;
-
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $description = null;
 
@@ -59,6 +53,9 @@ class Candidat
     private ?int $note = null;
 
     #[ORM\Column]
+    // (options: [
+    //     'default' => 'CURRENT_TIMESTAMP'
+    //     ])
     private ?\DateTimeImmutable $createdAt = null;
 
     #[ORM\Column(nullable: true)]
@@ -67,21 +64,43 @@ class Candidat
     #[ORM\Column(nullable: true)]
     private ?\DateTimeImmutable $deleteAt = null;
 
-    #[ORM\Column(nullable: true)]
-    private ?int $passport = null;
 
-    #[ORM\Column(nullable: true)]
-    private ?int $cv = null;
-
-    #[ORM\Column(nullable: true)]
-    private ?int $avatar = null;
-
-    #[ORM\OneToOne(cascade: ['persist', 'remove'])]
-    #[ORM\JoinColumn(nullable: false)]
-    private ?User $user = null;
 
     #[ORM\OneToMany(mappedBy: 'candidat', targetEntity: Candidature::class)]
     private Collection $candidatures;
+
+    #[ORM\OneToOne(inversedBy: 'candidat', cascade: ['persist', 'remove'])]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?User $user = null;
+
+    #[ORM\ManyToOne(inversedBy: 'candidats')]
+    private ?JobCategory $jobCategory = null;
+
+    #[ORM\ManyToOne(inversedBy: 'candidats')]
+    private ?Gender $gender = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $adress = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $country = null;
+
+    #[ORM\OneToOne(inversedBy: 'candidat', cascade: ['persist', 'remove'])]
+    #[ORM\JoinColumn(nullable: true)]
+    private ?Media $passport = null;
+
+    #[ORM\OneToOne(cascade: ['persist', 'remove'])]
+    #[ORM\JoinColumn(nullable: true)]
+    private ?Media $cv = null;
+
+    #[ORM\OneToOne(cascade: ['persist', 'remove'])]
+    #[ORM\JoinColumn(nullable: true)]
+    private ?Media $avatar = null;
+
+    #[ORM\ManyToOne(inversedBy: 'candidats')]
+    private ?CandidatExperience $experience = null;
+
+
 
     public function __construct()
     {
@@ -95,17 +114,6 @@ class Candidat
         return $this->id;
     }
 
-    public function getGender(): ?string
-    {
-        return $this->gender;
-    }
-
-    public function setGender(?string $gender): static
-    {
-        $this->gender = $gender;
-
-        return $this;
-    }
 
     public function getFirstname(): ?string
     {
@@ -143,17 +151,6 @@ class Candidat
         return $this;
     }
 
-    public function getCity(): ?string
-    {
-        return $this->city;
-    }
-
-    public function setCity(?string $city): static
-    {
-        $this->city = $city;
-
-        return $this;
-    }
 
     public function getNationality(): ?string
     {
@@ -227,17 +224,7 @@ class Candidat
         return $this;
     }
 
-    public function getExperience(): ?string
-    {
-        return $this->experience;
-    }
 
-    public function setExperience(?string $experience): static
-    {
-        $this->experience = $experience;
-
-        return $this;
-    }
 
     public function getDescription(): ?string
     {
@@ -299,65 +286,6 @@ class Candidat
         return $this;
     }
 
-    public function getPassport(): ?int
-    {
-        return $this->passport;
-    }
-
-    public function setPassport(?int $passport): static
-    {
-        $this->passport = $passport;
-
-        return $this;
-    }
-
-    public function getCv(): ?int
-    {
-        return $this->cv;
-    }
-
-    public function setCv(?int $cv): static
-    {
-        $this->cv = $cv;
-
-        return $this;
-    }
-
-    public function getAvatar(): ?int
-    {
-        return $this->avatar;
-    }
-
-    public function setAvatar(?int $avatar): static
-    {
-        $this->avatar = $avatar;
-
-        return $this;
-    }
-
-    public function getUser(): ?User
-    {
-        return $this->user;
-    }
-
-    public function setUser(User $user): static
-    {
-        $this->user = $user;
-
-        return $this;
-    }
-
-    public function getCandidature(): ?Candidature
-    {
-        return $this->candidature;
-    }
-
-    public function setCandidature(?Candidature $candidature): static
-    {
-        $this->candidature = $candidature;
-
-        return $this;
-    }
 
     /**
      * @return Collection<int, Candidature>
@@ -388,4 +316,181 @@ class Candidat
 
         return $this;
     }
+
+    public function getUser(): ?User
+    {
+        return $this->user;
+    }
+
+    public function setUser(User $user): static
+    {
+        $this->user = $user;
+
+        return $this;
+    }
+
+    public function getJobCategory(): ?JobCategory
+    {
+        return $this->jobCategory;
+    }
+
+    public function setJobCategory(?JobCategory $jobCategory): static
+    {
+        $this->jobCategory = $jobCategory;
+
+        return $this;
+    }
+
+    public function getGender(): ?Gender
+    {
+        return $this->gender;
+    }
+
+    public function setGender(?Gender $gender): static
+    {
+        $this->gender = $gender;
+
+        return $this;
+    }
+
+    public function getAdress(): ?string
+    {
+        return $this->adress;
+    }
+
+    public function setAdress(?string $adress): static
+    {
+        $this->adress = $adress;
+
+        return $this;
+    }
+
+    public function getCountry(): ?string
+    {
+        return $this->country;
+    }
+
+    public function setCountry(string $country): static
+    {
+        $this->country = $country;
+
+        return $this;
+    }
+
+    public function getPassport(): ?Media
+    {
+        return $this->passport;
+    }
+
+    public function setPassport(?Media $passport): static
+    {
+        $this->passport = $passport;
+
+        return $this;
+    }
+
+    public function getCv(): ?Media
+    {
+        return $this->cv;
+    }
+
+    public function setCv(?Media $cv): static
+    {
+        $this->cv = $cv;
+
+        return $this;
+    }
+
+    public function getAvatar(): ?Media
+    {
+        return $this->avatar;
+    }
+
+    public function setAvatar(?Media $avatar): static
+    {
+        $this->avatar = $avatar;
+
+        return $this;
+    }
+
+    public function getExperience(): ?CandidatExperience
+    {
+        return $this->experience;
+    }
+
+    public function setExperience(?CandidatExperience $experience): static
+    {
+        $this->experience = $experience;
+
+        return $this;
+    }
+
+    public function profilStatus() 
+    {
+        $status = 0;
+
+        if($this->gender !== null){
+            $status++;
+        }
+
+        if($this->firstname !== null){
+            $status++;
+        }
+
+        if($this->lastname !== null){
+            $status++;
+        }
+
+        if($this->localisation !== null){
+            $status++;
+        }
+
+        if($this->nationality !== null){
+            $status++;
+        }
+
+        if($this->birthdate !== null){
+            $status++;
+        }
+
+        if($this->description !== null){
+            $status++;
+        }
+
+        if($this->adress !== null){
+            $status++;
+        }
+        
+        if($this->country !== null){
+            $status++;
+        }
+                
+        if($this->birthCity !== null){
+            $status++;
+        }
+
+        if($this->experience !== null){
+            $status++;
+        }
+
+        if($this->avatar !== null){
+            $status++;
+        }
+                        
+        if($this->passport !== null){
+            $status++;
+        }
+                        
+        if($this->cv !== null){
+            $status++;
+        }
+        
+        if($this->jobCategory !== null){
+            $status++;
+        }
+
+        return round($status*100/15,0);
+    }
+
+
 }

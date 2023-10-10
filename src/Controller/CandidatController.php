@@ -3,79 +3,157 @@
 namespace App\Controller;
 
 use App\Entity\Candidat;
+use App\Entity\Media;
+use App\Entity\User;
 use App\Form\CandidatType;
 use App\Repository\CandidatRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Uid\Uuid;
 
 #[Route('/candidat')]
 class CandidatController extends AbstractController
 {
-    #[Route('/', name: 'app_candidat_index', methods: ['GET'])]
-    public function index(CandidatRepository $candidatRepository): Response
+    #[Route('/', name: 'app_candidat_profil')]
+    public function index(Request $request, EntityManagerInterface $entityManager): Response
     {
-        return $this->render('candidat/index.html.twig', [
-            'candidats' => $candidatRepository->findAll(),
-        ]);
-    }
+        /**
+         * @var User $user
+         */
 
-    #[Route('/new', name: 'app_candidat_new', methods: ['GET', 'POST'])]
-    public function new(Request $request, EntityManagerInterface $entityManager): Response
-    {
-        $candidat = new Candidat();
-        $form = $this->createForm(CandidatType::class, $candidat);
-        $form->handleRequest($request);
 
-        if ($form->isSubmitted() && $form->isValid()) {
-            $entityManager->persist($candidat);
+        $user = $this->getUser();
+        $candidat = $user->getCandidat();
+
+        $formProfil = $this->createForm(CandidatType::class, $candidat);
+        $formProfil->handleRequest($request);
+
+        if ($formProfil->isSubmitted() && $formProfil->isValid()) {
+
+            if ($formProfil['avatar']->getData()) {
+
+                /**
+                 **@var UploadedFile $avatarFile
+                 */
+
+                $avatarFile = $formProfil['avatar']->getData();
+                //  dd($avatarFile);
+                $avatarFileName = Uuid::v7();
+
+                $extension = $avatarFile->guessExtension();
+                if (!$extension) {
+                    $extension = 'png';
+                }
+
+
+                $avatarFileName = $avatarFileName . "." . $extension;
+
+                $avatarFile->move('media/avatar', $avatarFileName);
+
+                $avatarFileMedia = new Media();
+                $avatarFileMedia->setUrl($avatarFileName);
+                $avatarFileMedia->setOriginalName($avatarFile->getClientOriginalName());
+                //  dd($avatarFileMedia);
+
+
+                $entityManager->persist($avatarFileMedia);
+
+                $candidat->setAvatar($avatarFileMedia);
+                $entityManager->persist($candidat);
+                //  dd($candidat);
+            }
+
+
+
+            if ($formProfil['passport']->getData()) {
+
+
+
+                /**
+                 **@var UploadedFile $passportFile
+                 */
+
+                $passportFile = $formProfil['passport']->getData();
+                //  dd($passportFile);
+
+
+                    $passportFileName = Uuid::v7();
+
+                    $extension = $passportFile->guessExtension();
+                    if (!$extension) {
+                        $extension = 'png';
+                    }
+
+
+                    $passportFileName = $passportFileName . "." . $extension;
+
+                    $passportFile->move('media/passport', $passportFileName);
+
+                    $passportFileMedia = new Media();
+                    $passportFileMedia->setUrl($passportFileName);
+                    $passportFileMedia->setOriginalName($passportFile->getClientOriginalName());
+                    //  dd($passportFileMedia);
+
+
+                    $entityManager->persist($passportFileMedia);
+
+                    $candidat->setPassport($passportFileMedia);
+                    $entityManager->persist($candidat);
+                    //  dd($candidat);
+                
+            }
+
+            
+            if ($formProfil['cv']->getData()) {
+
+                /**
+                 **@var UploadedFile $cvFile
+                 */
+
+                $cvFile = $formProfil['cv']->getData();
+                //  dd($cvFile);
+                $cvFileName = Uuid::v7();
+
+                $extension = $cvFile->guessExtension();
+                if (!$extension) {
+                    $extension = 'png';
+                }
+
+
+                $cvFileName = $cvFileName . "." . $extension;
+
+                $cvFile->move('media/cv', $cvFileName);
+
+                $cvFileMedia = new Media();
+                $cvFileMedia->setUrl($cvFileName);
+                $cvFileMedia->setOriginalName($cvFile->getClientOriginalName());
+                //  dd($cvFileMedia);
+
+
+                $entityManager->persist($cvFileMedia);
+
+                $candidat->setCv($cvFileMedia);
+                $entityManager->persist($candidat);
+                //  dd($candidat);
+            }
+
+            // dd($candidat);
+
             $entityManager->flush();
 
-            return $this->redirectToRoute('app_candidat_index', [], Response::HTTP_SEE_OTHER);
+
+            // return $this->redirectToRoute('')
         }
 
-        return $this->render('candidat/new.html.twig', [
-            'candidat' => $candidat,
-            'form' => $form,
+
+
+        return $this->render('candidat/profil.html.twig', [
+            'formProfil' =>  $formProfil,
+            'candidat' => $candidat
         ]);
-    }
-
-    #[Route('/{id}', name: 'app_candidat_show', methods: ['GET'])]
-    public function show(Candidat $candidat): Response
-    {
-        return $this->render('candidat/show.html.twig', [
-            'candidat' => $candidat,
-        ]);
-    }
-
-    #[Route('/{id}/edit', name: 'app_candidat_edit', methods: ['GET', 'POST'])]
-    public function edit(Request $request, Candidat $candidat, EntityManagerInterface $entityManager): Response
-    {
-        $form = $this->createForm(CandidatType::class, $candidat);
-        $form->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid()) {
-            $entityManager->flush();
-
-            return $this->redirectToRoute('app_candidat_index', [], Response::HTTP_SEE_OTHER);
-        }
-
-        return $this->render('candidat/edit.html.twig', [
-            'candidat' => $candidat,
-            'form' => $form,
-        ]);
-    }
-
-    #[Route('/{id}', name: 'app_candidat_delete', methods: ['POST'])]
-    public function delete(Request $request, Candidat $candidat, EntityManagerInterface $entityManager): Response
-    {
-        if ($this->isCsrfTokenValid('delete'.$candidat->getId(), $request->request->get('_token'))) {
-            $entityManager->remove($candidat);
-            $entityManager->flush();
-        }
-
-        return $this->redirectToRoute('app_candidat_index', [], Response::HTTP_SEE_OTHER);
     }
 }

@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use App\Repository\JobRepository;
+use DateTimeImmutable;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
@@ -34,28 +35,38 @@ class Job
     #[ORM\Column(length: 100)]
     private ?string $titleOffer = null;
 
-    #[ORM\Column(length: 255)]
-    private ?string $typeOffer = null;
+   
 
     #[ORM\Column(length: 255)]
     private ?string $location = null;
-
-    #[ORM\Column(length: 255)]
-    private ?string $jobCategory = null;
 
     #[ORM\Column]
     private ?int $salary = null;
 
     #[ORM\Column]
-    private ?\DateTimeImmutable $created_At = null;
+    private ?DateTimeImmutable $created_At = null;
 
     #[ORM\OneToMany(mappedBy: 'job', targetEntity: Candidature::class)]
     private Collection $candidatures;
+
+    #[ORM\ManyToOne(inversedBy: 'job')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?JobCategory $jobCategory = null;
+
+    #[ORM\ManyToOne(inversedBy: 'jobs')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?JobType $jobType = null;
+
+    #[ORM\Column]
+    private ?DateTimeImmutable $strated_At = null;
+
 
     public function __construct()
     {
         $this->client = new ArrayCollection();
         $this->candidatures = new ArrayCollection();
+        $this->setCreatedAt(new DateTimeImmutable());
+        
     }
 
     public function getId(): ?int
@@ -153,17 +164,7 @@ class Job
         return $this;
     }
 
-    public function getTypeOffer(): ?string
-    {
-        return $this->typeOffer;
-    }
 
-    public function setTypeOffer(string $typeOffer): static
-    {
-        $this->typeOffer = $typeOffer;
-
-        return $this;
-    }
 
     public function getLocation(): ?string
     {
@@ -177,17 +178,6 @@ class Job
         return $this;
     }
 
-    public function getJobCategory(): ?string
-    {
-        return $this->jobCategory;
-    }
-
-    public function setJobCategory(string $jobCategory): static
-    {
-        $this->jobCategory = $jobCategory;
-
-        return $this;
-    }
 
     public function getSalary(): ?int
     {
@@ -201,26 +191,14 @@ class Job
         return $this;
     }
 
-    public function getCreatedAt(): ?\DateTimeImmutable
+    public function getCreatedAt(): ?DateTimeImmutable
     {
         return $this->created_At;
     }
 
-    public function setCreatedAt(\DateTimeImmutable $created_At): static
+    public function setCreatedAt(DateTimeImmutable $created_At): static
     {
         $this->created_At = $created_At;
-
-        return $this;
-    }
-
-    public function getCandidature(): ?Candidature
-    {
-        return $this->candidature;
-    }
-
-    public function setCandidature(?Candidature $candidature): static
-    {
-        $this->candidature = $candidature;
 
         return $this;
     }
@@ -254,4 +232,41 @@ class Job
 
         return $this;
     }
+
+    public function getJobCategory(): ?JobCategory
+    {
+        return $this->jobCategory;
+    }
+
+    public function setJobCategory(?JobCategory $jobCategory): static
+    {
+        $this->jobCategory = $jobCategory;
+
+        return $this;
+    }
+
+    public function getJobType(): ?JobType
+    {
+        return $this->jobType;
+    }
+
+    public function setJobType(?JobType $jobType): static
+    {
+        $this->jobType = $jobType;
+
+        return $this;
+    }
+
+    public function getStratedAt(): ?DateTimeImmutable
+    {
+        return $this->strated_At;
+    }
+
+    public function setStratedAt(DateTimeImmutable $strated_At): static
+    {
+        $this->strated_At = $strated_At;
+
+        return $this;
+    }
+
 }

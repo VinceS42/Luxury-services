@@ -4,7 +4,9 @@ namespace App\Controller;
 
 use App\Entity\Job;
 use App\Form\JobType;
+use App\Repository\CandidatureRepository;
 use App\Repository\JobRepository;
+use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -30,6 +32,9 @@ class JobController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+
+            // $job->setUpdateAt(new DateTimeImmutable());
+
             $entityManager->persist($job);
             $entityManager->flush();
 
@@ -78,4 +83,29 @@ class JobController extends AbstractController
 
         return $this->redirectToRoute('app_job_index', [], Response::HTTP_SEE_OTHER);
     }
+
+    // #[Route('/show/next/{id}', name: 'app_job_show_next', methods: ['GET'])]
+    // public function showNext(Request $request,JobRepository $jobRepository, CandidatureRepository $candidatureRepository, Job $job): Response
+    // {
+    //     $id=0;
+    //     $nextId = 0;
+    //     $jobs = $jobRepository->findBy(
+    //         ['activated' => true],
+            
+    //     );
+
+    //     foreach($jobs as $job){
+    //         if($job === $job){
+    //             $nextId = $id+1;
+    //         }
+    //         $id++;
+    //     }
+    //     if($nextId>= count($jobs)){
+    //         $nextId = 0;
+    //     }
+        
+    //     $jobz = $jobs[$nextId]; 
+        
+    //     return $this->redirectToRoute('app_job_show',['id' => $jobz->getId()], Response::HTTP_SEE_OTHER);
+    // }
 }

@@ -2,6 +2,14 @@
 
 namespace App\Controller\Admin;
 
+use App\Entity\Candidat;
+use App\Entity\CandidatExperience;
+use App\Entity\Candidature;
+use App\Entity\Client;
+use App\Entity\Gender;
+use App\Entity\Job;
+use App\Entity\JobCategory;
+use App\Entity\JobType;
 use App\Entity\Product;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Dashboard;
 use EasyCorp\Bundle\EasyAdminBundle\Config\MenuItem;
@@ -41,6 +49,25 @@ class DashboardController extends AbstractDashboardController
     public function configureMenuItems(): iterable
     {
         yield MenuItem::linkToDashboard('Dashboard', 'fa fa-home');
-        yield MenuItem::linkToCrud('Produits', 'fas fa-list', Product::class);
+
+
+        yield MenuItem::subMenu('Clients', 'fas fa-folder')
+        ->setSubItems([
+            MenuItem::linkToCrud('Client', 'fas fa-list', Client::class),
+            MenuItem::linkToCrud('Job', 'fas fa-list', Job::class),
+            MenuItem::linkToCrud('JobCategory', 'fas fa-list', JobCategory::class),
+            MenuItem::linkToCrud('JobType', 'fas fa-list', JobType::class),
+        ]);
+
+        yield MenuItem::subMenu('Candidats', 'fas fa-folder')
+        ->setSubItems([
+            MenuItem::linkToCrud('Candidat', 'fas fa-list', Candidat::class),
+            MenuItem::linkToCrud('Candidature', 'fas fa-list', Candidature::class),
+            MenuItem::linkToCrud('Gender', 'fas fa-list', Gender::class),
+            MenuItem::linkToCrud('CandidatExperience', 'fas fa-list', CandidatExperience::class),
+        ]);
+
+
+
     }
 }
