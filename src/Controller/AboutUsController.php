@@ -7,14 +7,14 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 
-#[Route('/contact')]
-class ContactController extends AbstractController
+#[Route('/about')]
+class AboutUsController extends AbstractController
 {
-    #[Route('/', name: 'app_contact')]
+    #[Route('/', name: 'app_about_us')]
     public function index(): Response
     {
-        return $this->render('contact/contact.html.twig', [
-            'controller_name' => 'ContactController',
+        return $this->render('about/aboutus.html.twig', [
+            'controller_name' => 'AboutUsController',
         ]);
     }
 }

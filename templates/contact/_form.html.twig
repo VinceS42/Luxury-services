@@ -1,31 +1,4 @@
-{% extends 'base.html.twig' %}
-
-{% block title %}Contact{% endblock %}
-
-{% block body %}
-<div class="base">
-
-    <!-- Page -->
-    <div class="page">
-
-        <!-- Page Header-->
-        <section class="page-title page-title-bg fixed-bg overlay dark-5 padding-top-160 padding-bottom-80">
-            <div class="container">
-                <div class="row">
-                    <div class="col-md-12">
-                        <h2 class="white-text">Feel free to contact us</h2>
-                        <span class="white-text">for any questions or demands</span>
-                        <ol class="breadcrumb">
-                            <li><a href="#!">Home</a></li>
-                            <li class="active">Contact</li>
-                        </ol>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Page Content-->
-        <form method="POST" action="#!" accept-charset="UTF-8" id="formContact" class="light-gray-bg">
+<form method="POST" action="#!" accept-charset="UTF-8" id="formContact" class="light-gray-bg">
             <input name="_token" type="hidden" value="">
             <input name="job_id" type="hidden" value="">
             <section class="section-padding">
@@ -114,13 +87,3 @@
     </div>
 
 </div>
-{% endblock %}
-
-{% block javascripts %}
-<script type="text/javascript">
-
-    onAppReady(function() {
-        $('.preload').remove();
-    });
-</script>
-{% endblock %}

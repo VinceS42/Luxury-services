@@ -1,0 +1,48 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Contact
+{% endblock %}
+
+{% block body %}
+	<div
+		class="base">
+
+		<!-- Page -->
+		<div
+			class="page">
+
+			<!-- Page Header-->
+			<section class="page-title page-title-bg fixed-bg overlay dark-5 padding-top-160 padding-bottom-80">
+				<div class="container">
+					<div class="row">
+						<div class="col-md-12">
+							<h2 class="white-text">Feel free to contact us</h2>
+							<span class="white-text">for any questions or demands</span>
+							<ol class="breadcrumb">
+								<li>
+									<a href="#!">Home</a>
+								</li>
+								<li class="active">Contact</li>
+							</ol>
+						</div>
+					</div>
+				</div>
+			</section>
+
+			<!-- Page Content-->
+			{% include 'contact/_form.html.twig' %}
+			<div id="myMap" class="height-350">Gmap here</div>
+
+		</div>
+
+	</div>
+{% endblock %}
+
+{% block javascripts %}
+	<script type="text/javascript">
+
+		onAppReady(function () {
+$('.preload').remove();
+});
+	</script>
+{% endblock %}
